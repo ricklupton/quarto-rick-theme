@@ -1,0 +1,76 @@
+---
+title: "Template presentation for Rick"
+subtitle: At a Conference, Somewhere, 10-15 July 2022
+author: "Dr Rick Lupton"
+institute: Department of Mechanical Engineering, University of Bath, UK
+date: 11 July 2022
+format: rick-revealjs
+---
+
+## The problem
+
+There is ever-increasing demand for more presentations.
+
+Interesting things to say are the foundation -- ideally -- of all these presentations --- but while there are
+
+::: {.incremental}
+- tools for creating presentation slides
+- interesting things to present in them
+:::
+
+. . .
+
+they are not connected together.
+
+. . .
+
+**Can we use a Quarto template to make it easier to share the interesting things?**
+
+# The content
+
+This is a SVG file with stages as layers:
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.prep-svg src="example.svg"}
+frag 0 more
+```
+:::
+
+::: {.column .fragment fragment-index=0 width="50%"}
+Extra comment.
+:::
+
+::::
+
+# Conclusions {.smaller}
+
+Finished.
+
+. . .
+
+Futher developments:
+
+::: {.incremental}
+1.  One
+2.  Two
+3.  Three
+:::
+
+. . .
+
+:::: {.columns}
+::: {.column}
+R.C.Lupton@bath.ac.uk
+:::
+
+::: {.column}
+Thank you for listening!
+:::
+::::
+
+# References
+
+::: {#refs}
+:::

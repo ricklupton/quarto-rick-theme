@@ -1,0 +1,17 @@
+title: Rick's presentation
+author: Rick Lupton
+version: 1.0.0
+contributes:
+  formats:
+    revealjs:
+      theme: [default, rick.scss]
+      logo: uob-logo-grey-transparent.png
+      footer: |
+        Dr Rick Lupton, University of Bath
+      title-slide-attributes:
+        data-background-image: uob-logo-grey-transparent.png
+        data-background-size: initial
+        data-background-position: 50% 90%
+      preview-links: auto
+      filters:
+        - prep-svg.lua
