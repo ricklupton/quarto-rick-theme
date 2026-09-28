@@ -5,6 +5,7 @@ author: "Dr Rick Lupton"
 institute: Department of Mechanical Engineering, University of Bath, UK
 date: 11 July 2022
 format: rick-revealjs
+output-file: index.html
 ---
 
 ## The problem

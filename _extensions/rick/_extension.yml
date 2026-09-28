@@ -1,6 +1,6 @@
 title: Rick's presentation
 author: Rick Lupton
-version: 1.0.0
+version: 1.1.0
 contributes:
   formats:
     revealjs:

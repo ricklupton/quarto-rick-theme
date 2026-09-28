@@ -90,9 +90,9 @@ dom = parse(sys.argv[1])
 
 groups = dom.getElementsByTagName('g')
 layers = {
-    g.getAttributeNS(INKSCAPE, 'label'): g
+    g.getAttributeNS(INKSCAPE, 'label') or g.getAttribute('id'): g
     for g in groups
-    if g.getAttributeNS(INKSCAPE, 'groupmode') == 'layer'
+    if g.getAttributeNS(INKSCAPE, 'groupmode') == 'layer' or g.getAttribute('id')
 }
 
 def set_fragment(label):
@@ -107,6 +107,8 @@ def set_fragment(label):
 
 def set_visible(label, visible):
     style = layers[label].getAttribute('style')
+    if not style:
+        style = "display:none"
     if visible:
         style = re.sub(r'display:\s*none', 'display:inline', style)
     else:

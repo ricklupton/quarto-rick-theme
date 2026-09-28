@@ -17,6 +17,10 @@ $presentation-h4-font-size: 1.0em;
   padding-left: 0.5em;
 }
 
+.reveal .slide .compact ul li {
+    margin: 0;
+}
+
 // Title slide
 
 .reveal .slides #title-slide {
