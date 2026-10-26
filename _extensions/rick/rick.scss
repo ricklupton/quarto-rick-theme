@@ -74,8 +74,10 @@ $presentation-h4-font-size: 1.0em;
 
 // Show slide boundary while drafting. quarto-preview.js is only injected by
 // `quarto preview`'s live-reload server, never present in a plain render, so
-// this stays invisible in the built output.
-body:has(script[src*="quarto-preview.js"]) .reveal::after {
+// this stays invisible in the built output.  Not in reveal's print view
+// (`reveal-print`), where it would be drawn over every page -- and over every
+// thumbnail of the notes-sheet plugin's notes view, which is built on it.
+html:not(.reveal-print) body:has(script[src*="quarto-preview.js"]) .reveal::after {
     content: "";
     position: fixed;
 
