@@ -40,3 +40,21 @@ as a fragment, optionally at fragment index `n`.
 ## Styling helpers
 
 - `.compact` on a slide tightens list spacing.
+
+## Maths
+
+`rick-revealjs` typesets maths with KaTeX when the deck is rendered, not in
+the browser, using the embedded
+[katex-prerender](https://github.com/ricklupton/quarto-katex-prerender)
+extension. With `embed-resources: true`, a deck is then one file that shows
+its maths offline, from a USB stick or a VLE, with nothing beside it. KaTeX's
+HTML extension is on, so `\htmlClass{fragment}{...}` makes part of an
+equation a reveal.js fragment, and a TeX error stops the render. See that
+extension's README for the details, and to use it in documents and books.
+
+Needs Quarto 1.9.18 or later. To update the embedded copy, from this
+repository:
+
+```sh
+quarto add ricklupton/quarto-katex-prerender --embed rick
+```
