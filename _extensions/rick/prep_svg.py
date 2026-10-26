@@ -1,3 +1,4 @@
+from collections import defaultdict
 from xml.dom.minidom import parse
 from uuid import uuid4
 import sys
@@ -88,32 +89,63 @@ def make_ids_unique(svgElem):
 
 dom = parse(sys.argv[1])
 
+# A label selects every group with that Inkscape label or id.  Several groups
+# can share one: matplotlib, for example, writes each artist with a given gid
+# as its own <g id="...">, interleaved with other artists according to their
+# z-order.  Rather than moving them together, which would change what's drawn
+# on top of what, each command applies to all of them where they are.
 groups = dom.getElementsByTagName('g')
-layers = {
-    g.getAttributeNS(INKSCAPE, 'label') or g.getAttribute('id'): g
-    for g in groups
-    if g.getAttributeNS(INKSCAPE, 'groupmode') == 'layer' or g.getAttribute('id')
-}
+layers = defaultdict(list)
+for g in groups:
+    if g.getAttributeNS(INKSCAPE, 'groupmode') == 'layer' or g.getAttribute('id'):
+        layers[g.getAttributeNS(INKSCAPE, 'label') or g.getAttribute('id')].append(g)
+
+def find_layers(label):
+    if label not in layers:
+        raise ValueError('No layer or group with label or id "%s"' % label)
+    return layers[label]
 
 def set_fragment(label):
     match = re.match(r'^(\d*)\s*(.*)$', label)
     assert match
     index = match[1]
-    layer = layers[match[2]]
-    if index != '':
-        layer.setAttribute('data-fragment-index', index)
-    layer.setAttribute('class', layer.getAttribute('class') + ' fragment')
+    targets = find_layers(match[2])
+    if len(targets) > 1 and index == '':
+        # reveal.js would show each group on a separate click, and only an
+        # index keeps them together -- but adding one here would move this
+        # fragment ahead of every unindexed fragment on the slide.
+        raise ValueError(
+            '"%s" matches %d groups: give it a fragment index (e.g. "frag 1 %s") '
+            'so that they appear together' % (match[2], len(targets), match[2]))
+    for layer in targets:
+        if index != '':
+            layer.setAttribute('data-fragment-index', index)
+        layer.setAttribute('class', layer.getAttribute('class') + ' fragment')
     set_visible(match[2], True)
 
 def set_visible(label, visible):
-    style = layers[label].getAttribute('style')
-    if not style:
-        style = "display:none"
-    if visible:
-        style = re.sub(r'display:\s*none', 'display:inline', style)
-    else:
-        style = re.sub(r'display:\s*inline', 'display:none', style)
-    layers[label].setAttribute('style', style)
+    for layer in find_layers(label):
+        style = layer.getAttribute('style')
+        if not style:
+            style = "display:none"
+        if visible:
+            style = re.sub(r'display:\s*none', 'display:inline', style)
+        else:
+            style = re.sub(r'display:\s*inline', 'display:none', style)
+        layer.setAttribute('style', style)
+
+def make_duplicate_ids_distinct(svgElem):
+    """Number the second and later uses of an id: "a", "a-2", "a-3", ...
+
+    Only for ids that nothing refers to, such as matplotlib's per-artist groups.
+    """
+    seen = defaultdict(int)
+    for elem in svgElem.getElementsByTagName('*'):
+        orig_id = elem.getAttribute('id')
+        if orig_id:
+            seen[orig_id] += 1
+            if seen[orig_id] > 1:
+                elem.setAttribute('id', '%s-%d' % (orig_id, seen[orig_id]))
 
 
 for line in sys.stdin:
@@ -131,6 +163,7 @@ for line in sys.stdin:
     else:
         raise ValueError('Unknown command: {}'.format(cmd))
 
+make_duplicate_ids_distinct(dom)
 make_ids_unique(dom)
 remove_root_dimensions(dom)
 

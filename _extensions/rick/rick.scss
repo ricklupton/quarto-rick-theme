@@ -54,3 +54,39 @@ $presentation-h4-font-size: 1.0em;
         margin-top: 0;
     }
 }
+
+.reveal figure figcaption {
+  font-size: 0.6em;
+  color: #6b7280;
+}
+
+// A container that clips its content, so wrapping it with an
+// `.img-reveal-container.fragment` and setting a `clip-path: inset(...)`
+// style lets an image progressively reveal (e.g. left-to-right) as the
+// fragment becomes visible, rather than the usual all-at-once fade-in.
+.img-reveal-container {
+  overflow: hidden;
+  transition: clip-path 1.2s ease-in-out;
+}
+.img-reveal-container.fragment.visible {
+  clip-path: inset(0 0 0 0) !important;
+}
+
+// Show slide boundary while drafting. quarto-preview.js is only injected by
+// `quarto preview`'s live-reload server, never present in a plain render, so
+// this stays invisible in the built output.
+body:has(script[src*="quarto-preview.js"]) .reveal::after {
+    content: "";
+    position: fixed;
+
+    width: min(100vw, calc(100vh * 1050 / 700));
+    height: calc(min(100vw, calc(100vh * 1050 / 700)) * 700 / 1050);
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+    border: 2px dashed orange;
+    pointer-events: none;
+    z-index: 1000;
+}
